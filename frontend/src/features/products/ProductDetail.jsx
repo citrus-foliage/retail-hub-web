@@ -44,11 +44,15 @@ const ProductDetail = () => {
 
   const isWishlisted = product ? wishlist.includes(product._id) : false;
   const maxQty = product ? Number(product.countInStock) : 1;
+  const onSale =
+    product && product.salePrice != null && product.salePrice < product.price;
+  const effectivePrice = onSale ? product.salePrice : product?.price;
 
   const showToast = (message) => setToast({ visible: true, message });
 
   const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) addToCart(product);
+    for (let i = 0; i < quantity; i++)
+      addToCart({ ...product, price: effectivePrice });
     showToast(`${product.name} added to cart`);
   };
 
@@ -244,16 +248,51 @@ const ProductDetail = () => {
                 >
                   {product.name}
                 </h1>
-                <p
+                <div
                   style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: "10px",
                     margin: "0 0 28px 0",
-                    fontSize: "20px",
-                    color: "#2C2C2C",
-                    letterSpacing: "0.03em",
                   }}
                 >
-                  ₱{product.price.toLocaleString()}
-                </p>
+                  {onSale ? (
+                    <>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "20px",
+                          color: "#8B2E2E",
+                          letterSpacing: "0.03em",
+                        }}
+                      >
+                        ₱{product.salePrice.toLocaleString()}
+                      </p>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "16px",
+                          color: "#B0A898",
+                          letterSpacing: "0.03em",
+                          textDecoration: "line-through",
+                        }}
+                      >
+                        ₱{product.price.toLocaleString()}
+                      </p>
+                    </>
+                  ) : (
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "20px",
+                        color: "#2C2C2C",
+                        letterSpacing: "0.03em",
+                      }}
+                    >
+                      ₱{product.price.toLocaleString()}
+                    </p>
+                  )}
+                </div>
 
                 <div
                   style={{

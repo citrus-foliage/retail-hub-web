@@ -6,8 +6,13 @@ const CartDrawer = ({ open, onClose }) => {
   const { cartItems, removeFromCart, updateQuantity } = useCart();
   const navigate = useNavigate();
 
+  const getEffectivePrice = (item) =>
+    item.salePrice != null && item.salePrice < item.price
+      ? item.salePrice
+      : item.price;
+
   const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + getEffectivePrice(item) * item.quantity,
     0,
   );
 
@@ -175,7 +180,7 @@ const CartDrawer = ({ open, onClose }) => {
                       color: "#8C8070",
                     }}
                   >
-                    ₱{item.price.toLocaleString()}
+                    ₱{getEffectivePrice(item).toLocaleString()}
                   </p>
 
                   <div
@@ -253,7 +258,10 @@ const CartDrawer = ({ open, onClose }) => {
                     <p
                       style={{ margin: 0, fontSize: "12px", color: "#2C2C2C" }}
                     >
-                      ₱{(item.price * item.quantity).toLocaleString()}
+                      ₱
+                      {(
+                        getEffectivePrice(item) * item.quantity
+                      ).toLocaleString()}
                     </p>
 
                     <button

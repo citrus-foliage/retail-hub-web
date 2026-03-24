@@ -21,8 +21,13 @@ const Checkout = () => {
     };
   }, []);
 
+  const getEffectivePrice = (item) =>
+    item.salePrice != null && item.salePrice < item.price
+      ? item.salePrice
+      : item.price;
+
   const totalPrice = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+    (sum, item) => sum + getEffectivePrice(item) * item.quantity,
     0,
   );
 
@@ -168,7 +173,7 @@ const Checkout = () => {
                   </p>
                 </div>
                 <p style={{ margin: 0, fontSize: "13px", color: "#2C2C2C" }}>
-                  ₱{(item.price * item.quantity).toLocaleString()}
+                  ₱{(getEffectivePrice(item) * item.quantity).toLocaleString()}
                 </p>
               </div>
             ))}
