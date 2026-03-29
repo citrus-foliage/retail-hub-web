@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import API_URL from "../../services/api";
+import Navbar from "../../components/ui/Navbar.jsx";
 import Input from "../../components/ui/Input.jsx";
 import Button from "../../components/ui/Button.jsx";
 import PageTransition from "../../components/ui/PageTransition.jsx";
@@ -83,8 +84,14 @@ const Register = () => {
   };
 
   const pageStyle = {
+    display: "flex",
+    flexDirection: "column",
     minHeight: "100vh",
     backgroundColor: "#F5F0E8",
+  };
+
+  const contentStyle = {
+    flex: 1,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -125,73 +132,82 @@ const Register = () => {
   return (
     <PageTransition>
       <div style={pageStyle}>
-        <div style={containerStyle}>
-          <div style={headingGroupStyle}>
-            <p style={eyebrowStyle}>Retail Hub</p>
-            <h1 style={titleStyle}>Create Account</h1>
+        <Navbar />
+        <div style={contentStyle}>
+          <div style={containerStyle}>
+            <div style={headingGroupStyle}>
+              <p style={eyebrowStyle}>Retail Hub</p>
+              <h1 style={titleStyle}>Create Account</h1>
+            </div>
+
+            {serverError && (
+              <p style={{ color: "red", marginBottom: "16px" }}>
+                {serverError}
+              </p>
+            )}
+
+            <form onSubmit={handleSubmit} autoComplete="off" style={formStyle}>
+              <Input
+                ref={usernameRef}
+                label="Username"
+                name="username"
+                autoComplete="off"
+                placeholder="Your username"
+                value={form.username}
+                onChange={handleChange}
+                error={errors.username}
+                required
+              />
+              <Input
+                label="Email Address"
+                name="email"
+                type="email"
+                autoComplete="off"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={handleChange}
+                error={errors.email}
+                required
+              />
+              <Input
+                label="Password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Min. 6 characters"
+                value={form.password}
+                onChange={handleChange}
+                error={errors.password}
+                required
+              />
+              <Input
+                label="Confirm Password"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                placeholder="Repeat your password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                error={errors.confirmPassword}
+                required
+              />
+              <Button
+                type="submit"
+                fullWidth
+                disabled={loading}
+                style={{ marginTop: "8px" }}
+              >
+                {loading ? "Creating account…" : "Register"}
+              </Button>
+            </form>
+
+            <p style={footerStyle}>
+              Already have an account?{" "}
+              <Link to="/login" style={linkStyle}>
+                Sign in
+              </Link>
+            </p>
           </div>
-
-          {serverError && (
-            <p style={{ color: "red", marginBottom: "16px" }}>{serverError}</p>
-          )}
-
-          <form onSubmit={handleSubmit} style={formStyle}>
-            <Input
-              ref={usernameRef}
-              label="Username"
-              name="username"
-              placeholder="Your username"
-              value={form.username}
-              onChange={handleChange}
-              error={errors.username}
-              required
-            />
-            <Input
-              label="Email Address"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={handleChange}
-              error={errors.email}
-              required
-            />
-            <Input
-              label="Password"
-              name="password"
-              type="password"
-              placeholder="Min. 6 characters"
-              value={form.password}
-              onChange={handleChange}
-              error={errors.password}
-              required
-            />
-            <Input
-              label="Confirm Password"
-              name="confirmPassword"
-              type="password"
-              placeholder="Repeat your password"
-              value={form.confirmPassword}
-              onChange={handleChange}
-              error={errors.confirmPassword}
-              required
-            />
-            <Button
-              type="submit"
-              fullWidth
-              disabled={loading}
-              style={{ marginTop: "8px" }}
-            >
-              {loading ? "Creating account…" : "Register"}
-            </Button>
-          </form>
-
-          <p style={footerStyle}>
-            Already have an account?{" "}
-            <Link to="/login" style={linkStyle}>
-              Sign in
-            </Link>
-          </p>
         </div>
       </div>
     </PageTransition>

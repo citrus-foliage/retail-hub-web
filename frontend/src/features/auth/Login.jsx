@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "./authService";
 import { useAuth } from "../../contexts/AuthContext";
+import Navbar from "../../components/ui/Navbar.jsx";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import PageTransition from "../../components/ui/PageTransition.jsx";
@@ -60,8 +61,14 @@ const Login = () => {
   };
 
   const pageStyle = {
+    display: "flex",
+    flexDirection: "column",
     minHeight: "100vh",
     backgroundColor: "#F5F0E8",
+  };
+
+  const contentStyle = {
+    flex: 1,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -102,54 +109,61 @@ const Login = () => {
   return (
     <PageTransition>
       <div style={pageStyle}>
-        <div style={containerStyle}>
-          <div style={headingGroupStyle}>
-            <p style={eyebrowStyle}>Retail Hub</p>
-            <h1 style={titleStyle}>Welcome Back</h1>
+        <Navbar />
+        <div style={contentStyle}>
+          <div style={containerStyle}>
+            <div style={headingGroupStyle}>
+              <p style={eyebrowStyle}>Retail Hub</p>
+              <h1 style={titleStyle}>Welcome Back</h1>
+            </div>
+
+            {serverError && (
+              <p style={{ color: "red", marginBottom: "16px" }}>
+                {serverError}
+              </p>
+            )}
+
+            <form onSubmit={handleSubmit} autoComplete="off" style={formStyle}>
+              <Input
+                ref={emailRef}
+                label="Email Address"
+                name="email"
+                type="email"
+                autoComplete="off"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={handleChange}
+                error={errors.email}
+                required
+              />
+              <Input
+                label="Password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                placeholder="Your password"
+                value={form.password}
+                onChange={handleChange}
+                error={errors.password}
+                required
+              />
+              <Button
+                type="submit"
+                fullWidth
+                disabled={loading}
+                style={{ marginTop: "8px" }}
+              >
+                {loading ? "Signing in…" : "Sign In"}
+              </Button>
+            </form>
+
+            <p style={footerStyle}>
+              Don't have an account?{" "}
+              <Link to="/register" style={linkStyle}>
+                Create one
+              </Link>
+            </p>
           </div>
-
-          {serverError && (
-            <p style={{ color: "red", marginBottom: "16px" }}>{serverError}</p>
-          )}
-
-          <form onSubmit={handleSubmit} style={formStyle}>
-            <Input
-              ref={emailRef}
-              label="Email Address"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              value={form.email}
-              onChange={handleChange}
-              error={errors.email}
-              required
-            />
-            <Input
-              label="Password"
-              name="password"
-              type="password"
-              placeholder="Your password"
-              value={form.password}
-              onChange={handleChange}
-              error={errors.password}
-              required
-            />
-            <Button
-              type="submit"
-              fullWidth
-              disabled={loading}
-              style={{ marginTop: "8px" }}
-            >
-              {loading ? "Signing in…" : "Sign In"}
-            </Button>
-          </form>
-
-          <p style={footerStyle}>
-            Don't have an account?{" "}
-            <Link to="/register" style={linkStyle}>
-              Create one
-            </Link>
-          </p>
         </div>
       </div>
     </PageTransition>
