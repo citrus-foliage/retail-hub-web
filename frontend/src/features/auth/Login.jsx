@@ -7,6 +7,32 @@ import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import PageTransition from "../../components/ui/PageTransition.jsx";
 
+const EyeIcon = ({ visible }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {visible ? (
+      <>
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ) : (
+      <>
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+        <line x1="1" y1="1" x2="23" y2="23" />
+      </>
+    )}
+  </svg>
+);
+
 const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
@@ -15,6 +41,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     document.title = "Sign In — Retail Hub";
@@ -106,6 +133,20 @@ const Login = () => {
 
   const linkStyle = { color: "#2C2C2C", textDecoration: "underline" };
 
+  const eyeButtonStyle = {
+    position: "absolute",
+    right: 0,
+    bottom: errors.password ? "22px" : "8px",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    color: "#8C8070",
+    padding: 0,
+    display: "flex",
+    alignItems: "center",
+    lineHeight: 1,
+  };
+
   return (
     <PageTransition>
       <div style={pageStyle}>
@@ -136,17 +177,28 @@ const Login = () => {
                 error={errors.email}
                 required
               />
-              <Input
-                label="Password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                placeholder="Your password"
-                value={form.password}
-                onChange={handleChange}
-                error={errors.password}
-                required
-              />
+              <div style={{ position: "relative" }}>
+                <Input
+                  label="Password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="current-password"
+                  placeholder="Your password"
+                  value={form.password}
+                  onChange={handleChange}
+                  error={errors.password}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  style={eyeButtonStyle}
+                >
+                  <EyeIcon visible={showPassword} />
+                </button>
+              </div>
               <Button
                 type="submit"
                 fullWidth

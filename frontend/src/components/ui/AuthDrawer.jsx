@@ -6,6 +6,32 @@ import API_URL from "../../services/api";
 import Input from "./Input";
 import Button from "./Button";
 
+const EyeIcon = ({ visible }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    {visible ? (
+      <>
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ) : (
+      <>
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+        <line x1="1" y1="1" x2="23" y2="23" />
+      </>
+    )}
+  </svg>
+);
+
 const LoginPanel = ({ onClose, onSwitchToRegister }) => {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -14,6 +40,7 @@ const LoginPanel = ({ onClose, onSwitchToRegister }) => {
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     emailRef.current?.focus();
@@ -56,9 +83,15 @@ const LoginPanel = ({ onClose, onSwitchToRegister }) => {
     }
   };
 
-  const containerStyle = { padding: "40px 32px", flex: 1, overflowY: "auto" };
+  const containerStyle = {
+    padding: "40px 32px",
+    flex: 1,
+    overflowY: "auto",
+  };
 
-  const headingGroupStyle = { marginBottom: "40px" };
+  const headingGroupStyle = {
+    marginBottom: "40px",
+  };
 
   const eyebrowStyle = {
     fontSize: "10px",
@@ -75,7 +108,11 @@ const LoginPanel = ({ onClose, onSwitchToRegister }) => {
     letterSpacing: "0.05em",
   };
 
-  const formStyle = { display: "flex", flexDirection: "column", gap: "24px" };
+  const formStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "24px",
+  };
 
   const footerStyle = {
     textAlign: "center",
@@ -97,6 +134,20 @@ const LoginPanel = ({ onClose, onSwitchToRegister }) => {
     padding: 0,
   };
 
+  const eyeButtonStyle = {
+    position: "absolute",
+    right: 0,
+    bottom: errors.password ? "22px" : "8px",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    color: "#8C8070",
+    padding: 0,
+    display: "flex",
+    alignItems: "center",
+    lineHeight: 1,
+  };
+
   return (
     <div style={containerStyle}>
       <div style={headingGroupStyle}>
@@ -108,28 +159,58 @@ const LoginPanel = ({ onClose, onSwitchToRegister }) => {
         <p style={{ color: "red", marginBottom: "16px" }}>{serverError}</p>
       )}
 
-      <form onSubmit={handleSubmit} style={formStyle}>
+      <form onSubmit={handleSubmit} autoComplete="off" style={formStyle}>
+        <input
+          type="text"
+          name="username_fake"
+          style={{ display: "none" }}
+          tabIndex={-1}
+          readOnly
+        />
+        <input
+          type="password"
+          name="password_fake"
+          style={{ display: "none" }}
+          tabIndex={-1}
+          readOnly
+        />
+
         <Input
           ref={emailRef}
           label="Email Address"
           name="email"
           type="email"
+          autoComplete="off"
           placeholder="you@example.com"
           value={form.email}
           onChange={handleChange}
           error={errors.email}
           required
         />
-        <Input
-          label="Password"
-          name="password"
-          type="password"
-          placeholder="Your password"
-          value={form.password}
-          onChange={handleChange}
-          error={errors.password}
-          required
-        />
+
+        <div style={{ position: "relative" }}>
+          <Input
+            label="Password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
+            placeholder="Your password"
+            value={form.password}
+            onChange={handleChange}
+            error={errors.password}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            tabIndex={-1}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            style={eyeButtonStyle}
+          >
+            <EyeIcon visible={showPassword} />
+          </button>
+        </div>
+
         <Button
           type="submit"
           fullWidth
@@ -161,6 +242,8 @@ const RegisterPanel = ({ onSwitchToLogin }) => {
   const [errors, setErrors] = useState({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     usernameRef.current?.focus();
@@ -222,9 +305,15 @@ const RegisterPanel = ({ onSwitchToLogin }) => {
     }
   };
 
-  const containerStyle = { padding: "40px 32px", flex: 1, overflowY: "auto" };
+  const containerStyle = {
+    padding: "40px 32px",
+    flex: 1,
+    overflowY: "auto",
+  };
 
-  const headingGroupStyle = { marginBottom: "40px" };
+  const headingGroupStyle = {
+    marginBottom: "40px",
+  };
 
   const eyebrowStyle = {
     fontSize: "10px",
@@ -241,7 +330,11 @@ const RegisterPanel = ({ onSwitchToLogin }) => {
     letterSpacing: "0.05em",
   };
 
-  const formStyle = { display: "flex", flexDirection: "column", gap: "24px" };
+  const formStyle = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "24px",
+  };
 
   const footerStyle = {
     textAlign: "center",
@@ -263,6 +356,20 @@ const RegisterPanel = ({ onSwitchToLogin }) => {
     padding: 0,
   };
 
+  const eyeButtonStyle = (hasError) => ({
+    position: "absolute",
+    right: 0,
+    bottom: hasError ? "22px" : "8px",
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    color: "#8C8070",
+    padding: 0,
+    display: "flex",
+    alignItems: "center",
+    lineHeight: 1,
+  });
+
   return (
     <div style={containerStyle}>
       <div style={headingGroupStyle}>
@@ -274,11 +381,27 @@ const RegisterPanel = ({ onSwitchToLogin }) => {
         <p style={{ color: "red", marginBottom: "16px" }}>{serverError}</p>
       )}
 
-      <form onSubmit={handleSubmit} style={formStyle}>
+      <form onSubmit={handleSubmit} autoComplete="off" style={formStyle}>
+        <input
+          type="text"
+          name="username_fake"
+          style={{ display: "none" }}
+          tabIndex={-1}
+          readOnly
+        />
+        <input
+          type="password"
+          name="password_fake"
+          style={{ display: "none" }}
+          tabIndex={-1}
+          readOnly
+        />
+
         <Input
           ref={usernameRef}
           label="Username"
           name="username"
+          autoComplete="off"
           placeholder="Your username"
           value={form.username}
           onChange={handleChange}
@@ -289,32 +412,60 @@ const RegisterPanel = ({ onSwitchToLogin }) => {
           label="Email Address"
           name="email"
           type="email"
+          autoComplete="off"
           placeholder="you@example.com"
           value={form.email}
           onChange={handleChange}
           error={errors.email}
           required
         />
-        <Input
-          label="Password"
-          name="password"
-          type="password"
-          placeholder="Min. 6 characters"
-          value={form.password}
-          onChange={handleChange}
-          error={errors.password}
-          required
-        />
-        <Input
-          label="Confirm Password"
-          name="confirmPassword"
-          type="password"
-          placeholder="Repeat your password"
-          value={form.confirmPassword}
-          onChange={handleChange}
-          error={errors.confirmPassword}
-          required
-        />
+
+        <div style={{ position: "relative" }}>
+          <Input
+            label="Password"
+            name="password"
+            type={showPassword ? "text" : "password"}
+            autoComplete="new-password"
+            placeholder="Min. 6 characters"
+            value={form.password}
+            onChange={handleChange}
+            error={errors.password}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((v) => !v)}
+            tabIndex={-1}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            style={eyeButtonStyle(!!errors.password)}
+          >
+            <EyeIcon visible={showPassword} />
+          </button>
+        </div>
+
+        <div style={{ position: "relative" }}>
+          <Input
+            label="Confirm Password"
+            name="confirmPassword"
+            type={showConfirmPassword ? "text" : "password"}
+            autoComplete="new-password"
+            placeholder="Repeat your password"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            error={errors.confirmPassword}
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowConfirmPassword((v) => !v)}
+            tabIndex={-1}
+            aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+            style={eyeButtonStyle(!!errors.confirmPassword)}
+          >
+            <EyeIcon visible={showConfirmPassword} />
+          </button>
+        </div>
+
         <Button
           type="submit"
           fullWidth
